@@ -1,4 +1,4 @@
-import './BikeGridPage.css';
+import '../styles/pages/BikeGridPage.css';
 import ProductCard from '../components/ProductCard';
 
 export default function BikeGridPage() {

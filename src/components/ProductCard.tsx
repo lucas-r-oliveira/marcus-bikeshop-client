@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import './ProductCard.css';
+import '../styles/components/ProductCard.css';
 
 interface ProductCardProps {
 	productId: string;

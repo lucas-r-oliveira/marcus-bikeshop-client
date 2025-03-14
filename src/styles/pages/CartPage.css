@@ -1,0 +1,16 @@
+.checkout-container {
+	width: 500px;
+	position: absolute;
+	right: 0;
+	margin: 16px;
+
+	.total-container{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.checkout-btn {
+		width: 100%;
+	}
+}

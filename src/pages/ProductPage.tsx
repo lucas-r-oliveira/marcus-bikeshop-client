@@ -1,5 +1,5 @@
 import CustomizationOption from '../components/CustomizationOption';
-import './ProductPage.css';
+import '../styles/pages/ProductPage.css';
 
 // FIXME: this should be in a separate types file
 interface ProductProps {
@@ -22,7 +22,6 @@ export default function ProductPage(props: ProductProps) {
 			<div className="product-detail-left">
 				<img></img>
 				<p>Place Image here</p>
-				<button onClick={handleAddToCart}>Add to Cart</button>
 			</div>
 			<div className="product-detail-right">
 				<h1>{props.name}/ Title</h1>
@@ -33,6 +32,7 @@ export default function ProductPage(props: ProductProps) {
 						<CustomizationOption/>
 					))}
 				</div>
+				<button onClick={handleAddToCart}>Add to Cart</button>
 			</div>
 		</div>
 	)
