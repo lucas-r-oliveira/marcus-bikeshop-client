@@ -11,8 +11,6 @@ interface ProductCardProps {
 	inStock: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleAddToCart() {}
 
 export default function ProductCard(props: ProductCardProps) {
 	return(

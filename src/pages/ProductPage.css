@@ -1,0 +1,24 @@
+.product-detail-container {
+	display: flex;
+	flex-direction: row;
+	background-color: lightgreen;
+
+	.product-detail-left {
+		background-color: darkblue;
+		flex: 1;
+
+	}
+	.product-detail-right {
+		display: flex;
+		flex-direction: column;
+		background-color: darkslategrey;
+		flex: 1;
+
+		.customization-container {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+}
+
