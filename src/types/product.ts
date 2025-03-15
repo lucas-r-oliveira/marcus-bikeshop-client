@@ -24,7 +24,7 @@ export interface Product {
 	//discountedPrice
 	currency: string;
 	imageUrl: string;
-	inStock: boolean;
+	inStock: boolean; //TODO: review: if one of the parts is out of stock, then so is the product
 	category?: string;
 	parts?:  ProductPart[]
 }
