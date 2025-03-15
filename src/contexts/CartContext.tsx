@@ -102,7 +102,7 @@ export default function CartProvider({children}: Props) {
 	}
 
 
-	const value = {
+	const value: CartContextType = {
 		items,
 		getCartItem,
 		addToCart,
