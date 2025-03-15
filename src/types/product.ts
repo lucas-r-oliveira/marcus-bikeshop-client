@@ -27,4 +27,5 @@ export interface Product {
 	inStock: boolean; //TODO: review: if one of the parts is out of stock, then so is the product
 	category?: string;
 	parts?:  ProductPart[]
+	// do we differentiate between selected parts, default parts, customizable parts?
 }

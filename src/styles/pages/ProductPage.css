@@ -1,22 +1,26 @@
 .product-detail-container {
 	display: flex;
 	flex-direction: row;
-	background-color: lightgreen;
 
 	.product-detail-left {
-		background-color: darkblue;
 		flex: 1;
+		padding: 16px;
 
 	}
 	.product-detail-right {
 		display: flex;
 		flex-direction: column;
-		background-color: darkslategrey;
 		flex: 1;
+		padding: 24px;
 
 		.customization-container {
 			display: flex;
 			flex-direction: column;
+			gap: 16px;
+		}
+
+		.add-to-cart-btn {
+			margin-top: 24px;
 		}
 	}
 

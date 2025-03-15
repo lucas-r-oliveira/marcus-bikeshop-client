@@ -10,6 +10,7 @@ import BikeManagementPage from './pages/BikeManagementPage.tsx'
 import ProductConfigPage from './pages/ProductConfigPage.tsx'
 import ProductProvider from './contexts/ProductContext.tsx'
 
+//TODO: show cart in every page
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
 	<ProductProvider>
