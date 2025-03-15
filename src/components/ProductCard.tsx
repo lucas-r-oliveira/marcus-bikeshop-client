@@ -1,28 +1,40 @@
-import { Link } from 'react-router';
-import '../styles/components/ProductCard.css';
+import { Link } from "react-router";
+import "../styles/components/ProductCard.css";
+
+import { Action } from "../types/common";
 
 interface ProductCardProps {
-	productId: string;
-	name: string; // can also be title
-	price: number;
-	currency: string;
-	imageUrl: string;
-	description: string;
-	inStock: boolean;
+  productId: string;
+  name: string; // can also be title
+  price: number;
+  currency: string;
+  imageUrl: string;
+  description: string;
+  inStock: boolean;
+  actions?: [Action];
 }
 
-
 export default function ProductCard(props: ProductCardProps) {
-	return(
-		<Link to={`/products/${props.productId}`}>
-			<div className='card-container'>
-				<img alt='' src={props.imageUrl}></img>
-				<div className='text-info-container'>
-					<h4> {props.name} </h4>
-					<p> {props.price} {props.currency} </p>
-					<p> {props.description} </p>
-				</div>
-			</div>
-		</Link>
-	)
+  return (
+    <div className="card-container">
+      <Link to={`/products/${props.productId}`}>
+        <img alt="" src={props.imageUrl}></img>
+        <div className="text-info-container">
+          <h4> {props.name} </h4>
+          <p>
+            {" "}
+            {props.price} {props.currency}{" "}
+          </p>
+          <p> {props.description} </p>
+        </div>
+      </Link>
+      <div>
+        {props.actions?.map((action: Action) => (
+          <button onClick={action.action} className="action-btn">
+            {action.text}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

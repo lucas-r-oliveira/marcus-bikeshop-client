@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import BikeGridPage from './pages/BikeGridPage.tsx'
 import ProductPage from './pages/ProductPage.tsx'
 import CartPage from './pages/CartPage.tsx'
-import BikeListConfigPage from './pages/BikeListConfigPage.tsx'
+import BikeManagementPage from './pages/BikeManagementPage.tsx'
 import ProductConfigPage from './pages/ProductConfigPage.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')!).render(
 			<Route path="cart" element={<CartPage/>} />
 			<Route path="admin">
 				<Route path="products">
-					<Route path="bicycles" element={<BikeListConfigPage />}/>
+					<Route path="bicycles" element={<BikeManagementPage />}/>
 					<Route path=":productId" element={<ProductConfigPage />} />
 				</Route>
 			</Route>

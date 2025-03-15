@@ -1,10 +1,11 @@
 import '../styles/pages/BikeGridPage.css';
 import ProductCard from '../components/ProductCard';
+import ProductGrid from '../components/ProductGrid';
 
 export default function BikeGridPage() {
 
 	return (
-		<div className="grid-container">
+		<ProductGrid>
 		  <ProductCard 
 			productId='p1'
 			name='Mountain Bike'
@@ -13,6 +14,7 @@ export default function BikeGridPage() {
 			currency='€'
 			imageUrl='/path/to/p1-bike'
 			inStock={true}
+			actions={[{text: "add to cart", action: ()=>console.log("hello"), }]}
 		  />
 		  <ProductCard 
 			productId='p2'
@@ -50,6 +52,6 @@ export default function BikeGridPage() {
 			imageUrl='/path/to/p5-bike'
 			inStock={true}
 		  />
-		</div>
+		 </ProductGrid>
 	  )
   }
