@@ -35,6 +35,7 @@ export default function BikeManagementPage() {
             placeholder="Bicycle Name"
             value={newBike.name}
 			onChange={handleInputChange}
+			className='form-input'
           />
 
           <textarea
@@ -92,7 +93,8 @@ export default function BikeManagementPage() {
         </div>
       </div>
 
-      <ProductGrid></ProductGrid>
+      <ProductGrid>
+	  </ProductGrid>
     </div>
   );
 }
