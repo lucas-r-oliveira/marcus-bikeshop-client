@@ -29,3 +29,9 @@ export interface Product {
 	parts?:  ProductPart[]
 	// do we differentiate between selected parts, default parts, customizable parts?
 }
+
+
+export interface SelectedProductConfig {
+	productId: ProductId;
+	selectedOptions: Record<PartId, OptionId>;
+}

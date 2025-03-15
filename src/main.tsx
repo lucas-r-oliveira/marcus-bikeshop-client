@@ -9,27 +9,30 @@ import CartPage from './pages/CartPage.tsx'
 import BikeManagementPage from './pages/BikeManagementPage.tsx'
 import ProductConfigPage from './pages/ProductConfigPage.tsx'
 import ProductProvider from './contexts/ProductContext.tsx'
+import CartProvider from './contexts/CartContext.tsx'
 
-//TODO: show cart in every page
+//TODO: show cart in every page (icon + badge)
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
 	<ProductProvider>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<App />} />
-				<Route path="products">
-					<Route path="bicycles" element={<BikeGridPage />}/>
-					<Route path=":productId" element={<ProductPage />} />
-				</Route>
-				<Route path="cart" element={<CartPage/>} />
-				<Route path="admin">
+		<CartProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<App />} />
 					<Route path="products">
-						<Route path="bicycles" element={<BikeManagementPage />}/>
-						<Route path=":productId" element={<ProductConfigPage />} />
+						<Route path="bicycles" element={<BikeGridPage />}/>
+						<Route path=":productId" element={<ProductPage />} />
 					</Route>
-				</Route>
-			</Routes>
-		</BrowserRouter>
+					<Route path="cart" element={<CartPage/>} />
+					<Route path="admin">
+						<Route path="products">
+							<Route path="bicycles" element={<BikeManagementPage />}/>
+							<Route path=":productId" element={<ProductConfigPage />} />
+						</Route>
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</CartProvider>
 	</ProductProvider>
   </StrictMode>,
 )

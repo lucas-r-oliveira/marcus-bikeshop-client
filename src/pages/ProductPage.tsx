@@ -6,16 +6,15 @@ import { useEffect, useState } from 'react';
 
 import { Product } from '../types/product';
 import CustomizationOption from '../components/CustomizationOption';
+import { useCart } from '../contexts/CartContext';
 
 //TODO: if product does not exist show 404 page
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleAddToCart() {}
 
 export default function ProductPage() {
 	const { productId } = useParams();
 	const { getProductById } = useProduct();
-	// TODO: const { cart }  = useCart();
+	const { addToCart } = useCart()
 	const [ product, setProduct ] = useState<Product | undefined>(undefined)
 
 	useEffect(() => {
@@ -23,6 +22,12 @@ export default function ProductPage() {
 		setProduct(getProductById(productId))
 		// TODO: handle 404 here
 	}, [getProductById, productId])
+	
+	function handleAddToCart() {
+		if (!product) return;
+		//TODO: config
+		addToCart(product.name, product.basePrice, product.imageUrl,  )
+	}
 
 	return(
 		<div className="product-detail-container">
@@ -44,7 +49,11 @@ export default function ProductPage() {
 						/>
 					))}
 				</div>
-				<button onClick={handleAddToCart} className='add-to-cart-btn'>Add to Cart</button>
+				{product?
+					<button onClick={handleAddToCart} className='add-to-cart-btn'>Add to Cart</button>
+					:
+					null
+				}
 			</div>
 		</div>
 	)
