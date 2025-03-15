@@ -1,0 +1,8 @@
+.create-form-container {
+	.form-fields {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 500px;
+	}
+}
