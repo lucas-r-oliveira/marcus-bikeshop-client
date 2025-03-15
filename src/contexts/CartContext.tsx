@@ -1,9 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { OptionId, PartId, ProductId, SelectedProductConfig } from "../types/product";
 import { CartItem } from "../types/cart";
 
 interface CartContextType {
 	items: CartItem[];
+	
 	addToCart: (productName: string, basePrice: number, imageUrl: string, config: SelectedProductConfig) => void 
 	removeFromCart: (cartItemId: string) => void
 	updateItemQty: (cartItemId: string, qty: number) => void
@@ -25,11 +26,32 @@ export function useCart(): CartContextType {
 	return context;
 }
 
+const CART_STORAGE_KEY = "bicycle-shop-cart";
+
 type Props = {
 	children?: React.ReactNode
 }
 export default function CartProvider({children}: Props) {
 	const [items, setItems] = useState<CartItem[]>([]); //TODO: set?
+
+	useEffect(() => {
+		try {
+			const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+			if (savedCart) {
+				setItems(JSON.parse(savedCart));
+			}
+		} catch (error) {
+			console.error("Failed to load cart from localstorage: ", error)
+		}
+	}, [])
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+		} catch (error) {
+			console.error("Failed to save cart to localstorage: ", error)
+		}
+	}, [items])
 
 	function getCartItem(productId: ProductId, selectedOptions: Record<PartId, OptionId>) {
 		return items.find(item => {

@@ -1,44 +1,36 @@
 import "../styles/pages/CartPage.css"
 import CartItem from "../components/CartItem";
+import { useCart } from "../contexts/CartContext";
 
-// remember to show an empty cart if it is empty
-// TODO: calc total price
+//FIXME: hardcoded currency
 export default function CartPage() {
-  return (
+	const { items, getCartTotal } = useCart()
+	
+
+	return (
     <>
-      <div>
-        <CartItem
-          productId="BIKE-001"
-          productImageUrl="/path/to/image/url"
-          productModel="Touring"
-          productName="Mountain Bike"
-          productPrice={42.42}
-          currency="EUR"
-          productQty={1}
-        />
-        <CartItem
-          productId="BIKE-002"
-          productImageUrl="/path/to/image/url"
-          productModel="Touring"
-          productName="Racing Bike"
-          productPrice={100.23}
-          currency="EUR"
-          productQty={2}
-        />
-        <CartItem
-          productId="BIKE-003"
-          productImageUrl="/path/to/image/url"
-          productModel="Touring"
-          productName="Casual Bike"
-          productPrice={99.99}
-          currency="EUR"
-          productQty={1}
-        />
+		<div>
+			{ items.length > 0?
+				items.map(item => (
+					<CartItem 
+						productId={item.productId}
+						cartItemId={item.cartItemId}
+						//TODO: selectedOptions
+						productName={item.name}
+						productPrice={item.basePrice}
+						productImageUrl={item.imageUrl}
+						// what do I do with this? productModel={}
+						currency="EUR" //What do I do with this?
+						productQty={item.qty}
+					/>
+				))
+				: (<h4>Your cart is empty!</h4>)
+			}	
       </div>
       <div className="checkout-container">
 		<div className="total-container">
 			<p>Subtotal</p>
-			<p>EUR Total Price</p>
+			<p>EUR {getCartTotal().toFixed(2)}</p>
 		</div>
 		<button className="checkout-btn">Checkout</button>
 	  </div>
