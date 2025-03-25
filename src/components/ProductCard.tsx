@@ -11,7 +11,7 @@ interface ProductCardProps {
   imageUrl: string;
   description: string;
   inStock: boolean;
-  actions?: [Action];
+  actions?: Action[];
 }
 
 export default function ProductCard(props: ProductCardProps) {
@@ -28,9 +28,13 @@ export default function ProductCard(props: ProductCardProps) {
           <p> {props.description} </p>
         </div>
       </Link>
-      <div>
+      <div className="action-btns-container">
         {props.actions?.map((action: Action) => (
-          <button onClick={action.action} className="action-btn">
+          <button 
+		  		onClick={action.action} 
+		 	 	className="action-btn" 
+				style={{backgroundColor: action.btnColor}}
+			>
             {action.text}
           </button>
         ))}

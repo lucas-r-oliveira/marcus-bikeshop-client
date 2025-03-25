@@ -1,100 +1,92 @@
-import '../styles/pages/BikeManagementPage.css'
+import "../styles/pages/BikeManagementPage.css";
 import { useState } from "react";
 import ProductGrid from "../components/ProductGrid";
+import { useProduct } from "../contexts/ProductContext";
+import ProductCard from "../components/ProductCard";
+import { Product, ProductId } from "../types/product";
+import { useNavigate } from "react-router";
 
+//FIXME: hardcoded currency
 export default function BikeManagementPage() {
-  const [newBike, setNewBike] = useState({
-    productId: "",
+  const navigate = useNavigate();
+  const { products } = useProduct();
+  const [bikes, setBikes ] = useState(products)
+  /*const [newBike, setNewBike] = useState<Product>({
+    id: "",
     name: "",
     description: "",
-    price: 0,
+    basePrice: 0,
     currency: "€",
     imageUrl: "",
     inStock: true,
     category: "",
-  });
-  
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-	const { name, value } = e.target;
+  });*/
 
-	setNewBike({
+	/*function handleInputChange(
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) {
+		const { name, value } = e.target;
+
+		setNewBike({
 		...newBike,
-		[name]: name === 'price' ? parseFloat(value) : value
-	})
-  }
+		[name]: name === "basePrice" ? parseFloat(value) : value,
+		});
+	}*/
+
+
+	// this goes to a context probably
+	//FIXME:
+	function handleDeleteBike(productId: ProductId) {
+		setBikes(bikes.filter(bike => bike.id !== productId));
+	}
+
+	function handleEditBike(product: Product) {
+		navigate(`/admin/products/${product.id}` , {state: product}) //TODO: /bicycles or not?
+	}
+	function handleCreateBike() {
+		navigate(`/admin/products/create` , {state: {
+			id: "",
+			name: "",
+			description: "",
+			basePrice: 0,
+			currency: "€",
+			imageUrl: "",
+			inStock: true,
+			category: "",
+		}})
+	}
+
 
   return (
-    <div className="bike-management-container">
-      <h1 className="section-title">Bicycle Management</h1>
-      <div className="create-form-container">
-        <h2 className="section-title">Create New Bicycle</h2>
-        <div className="form-fields">
-          <input
-            type="text"
-            name="name"
-            placeholder="Bicycle Name"
-            value={newBike.name}
-			onChange={handleInputChange}
-			className='form-input'
-          />
+	<>
+	<button className="create-bike-btn" onClick={() => handleCreateBike()}>Create bicycle</button>
+	<ProductGrid>
+		{products.map(product => (
+			<ProductCard
+				productId={product.id}
+				key={product.id}
+				name={product.name}
+				description={product.description}
+				imageUrl={product.imageUrl}
+				inStock={product.inStock}
+				price={product.basePrice}
+				currency={product.currency}
+				actions={[
+					{
+						text: "Delete",
+						action: () => handleDeleteBike(product.id),
+						btnColor: "red"
+					},
+					{
+						text: "Edit",
+						action: () => handleEditBike(product),
+					},
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={newBike.description}
-            className="form-textarea"
-			onChange={handleInputChange}
-          />
 
-          <div className="price-container">
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              value={newBike.price}
-              className="price-input"
-			  onChange={handleInputChange}
-            />
-            {/* <input
-              type="text"
-              name="currency"
-              placeholder="Currency"
-              value={newBike.currency}
-              className="currency-input"
-				onChange={handleInputChange}
-            /> */}
-			<p>{newBike.currency}</p>
-          </div>
-
-          <input
-            type="text"
-            name="imageUrl"
-            placeholder="Image URL"
-            value={newBike.imageUrl}
-            className="form-input"
-			onChange={handleInputChange}
-          />
-
-          <input
-            type="text"
-            name="category"
-            placeholder="Category"
-            value={newBike.category}
-            className="form-input"
-			onChange={handleInputChange}
-          />
-
-          <label className="stock-label">
-            <input type="checkbox" name="inStock" checked={newBike.inStock} />
-            In Stock
-          </label>
-
-          <button className="create-button">Create Bicycle</button>
-        </div>
-      </div>
-
-      <ProductGrid>
+				]}
+			/>
+		))}
 	  </ProductGrid>
-    </div>
+	 </>
   );
 }

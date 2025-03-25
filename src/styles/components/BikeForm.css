@@ -1,0 +1,101 @@
+.management-container{
+	display: flex;
+	flex-direction: column;
+
+	.forms-container {
+		display: flex;
+		flex-direction: row;
+
+		.main-form-container {
+			padding: 16px;
+			flex: 1;	
+			.form-fields {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				/* max-width: 500px; */
+
+				.form-input {
+					padding: 8px;
+				}
+				.form-textarea {
+					padding: 8px;
+					min-height: 80px;
+				}
+
+				.price-container {
+					display: flex;
+					gap: 12px;
+					align-items: center
+				}
+			}
+		}
+		.parts-form-container {
+			display: flex;
+			flex-direction: column;
+			flex: 1;	
+			padding: 16px;
+
+			.part-badges-container {
+				padding: 8px;
+				border: 0.5px solid;
+				border-radius: 8px;
+				border-color:antiquewhite;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-around;
+				margin-top: 24px;
+
+				.part-badge {
+					border-radius: 4px;
+					padding: 8px;
+					background-color: blueviolet;
+				
+				}
+			}
+		}
+	}
+	.action-btn {
+		max-width: 500px;
+		align-self: center;
+	}
+
+}
+
+
+.product-parts-container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+  }
+  
+  .product-part {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	padding: 12px;
+  }
+  
+  .product-part-label {
+	font-weight: bold;
+	margin-bottom: 8px;
+	display: block;
+  }
+  
+  .product-part-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+  }
+  
+  .product-option-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+  }
+  
+  .product-option-label input {
+	margin: 0;
+  }

@@ -1,22 +1,3 @@
-.create-form-container {
-	.form-fields {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-		max-width: 500px;
-
-		.form-input {
-			padding: 8px;
-		}
-		.form-textarea {
-			padding: 8px;
-			min-height: 80px;
-		}
-
-		.price-container {
-			display: flex;
-			gap: 12px;
-			align-items: center
-		}
-	}
+.create-bike-btn {
+	margin: 16px;
 }

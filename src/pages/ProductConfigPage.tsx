@@ -1,8 +1,8 @@
+import BikeForm from "../components/BikeForm";
+
 export default function ProductConfigPage() {
 	return (
-		<div>
-			Product Config Page
-		</div>
+		<BikeForm />
 	)
 
 }

@@ -27,8 +27,10 @@ createRoot(document.getElementById('root')!).render(
 						<Route path="cart" element={<CartPage/>} />
 						<Route path="admin">
 							<Route path="products">
-								<Route path="bicycles" element={<BikeManagementPage />}/>
+								<Route path="bicycles" element={<BikeManagementPage />}>
+								</Route>
 								<Route path=":productId" element={<ProductConfigPage />} />
+								<Route path="create" element={<ProductConfigPage />}/>
 							</Route>
 						</Route>
 					</Routes>
