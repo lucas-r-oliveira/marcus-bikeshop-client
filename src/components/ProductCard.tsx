@@ -10,7 +10,7 @@ interface ProductCardProps {
   currency: string;
   imageUrl: string;
   description: string;
-  inStock: boolean;
+  //inStock: boolean;
   actions?: Action[];
 }
 
