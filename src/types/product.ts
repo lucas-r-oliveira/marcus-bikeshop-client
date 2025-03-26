@@ -38,7 +38,8 @@ export interface SelectedProductConfig {
 
 export interface PartConfiguration {
 	availableOptions: PartOption[];
-	id: string;
+	//id: string;
+	partName: string;
 	partId: string;
   }
   
@@ -55,6 +56,12 @@ export interface PartConfiguration {
 	options: PartOption[];
   }
   
+  export interface CharacteristicOption {
+	name: string;
+	characteristicType: string;
+	inStock: boolean;
+  }
+  
   export interface Product {
 	basePrice: number;
 	category: string;
@@ -63,6 +70,9 @@ export interface PartConfiguration {
 	id: string;
 	imageUrl: string;
 	name: string;
-	partConfigs: PartConfiguration[];
-	parts: ProductPart[];
+	//partConfigs: PartConfiguration[];
+	//parts: ProductPart[];
+	defaultCharacteristics: CharacteristicOption[];
+	availableCharacteristics: CharacteristicOption[];
+	
   }

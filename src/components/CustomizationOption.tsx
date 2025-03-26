@@ -1,20 +1,32 @@
 import '../styles/components/CustomizationOption.css';
-import { ProductPart } from "../types/product";
 
-// TODO: state? Track selected options for product
-export default function CustomizationOption(props: ProductPart) {
+//FIXME: defined in the parent component
+interface Option {
+	name: string;
+	inStock: boolean;
+}
+
+interface Props {
+	characteristicType: string;
+	options: Option[];
+	//TODO: review
+	selectOption: (characteristicType: string, optionName: string) => void;
+}
+export default function CustomizationOption(props: Props/*props: ProductPart*/) {
 
 	return (
 		<div className="customization-option-container">
-			<label>{props.name}:</label>
-			<select value="Blue" className='select-container'>
-				{props.options.map((partOption) => (
+
+			<label>{props.characteristicType}:</label>
+			<select className='select-container'>
+				{props.options.map((option) => (
 					<option 
-						disabled={partOption.stockStatus === "OUT_OF_STOCK"} 
-						key={partOption.id} 
-						value={partOption.name}
+						disabled={!option.inStock} 
+						key={option.name} 
+						value={option.name}
+						onSelect={()=> props?.selectOption(props.characteristicType, option.name)}
 					>
-						{partOption.name}
+						{option.name}
 					</option>
 				))}
 			</select>

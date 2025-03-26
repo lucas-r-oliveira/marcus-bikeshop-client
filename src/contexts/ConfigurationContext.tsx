@@ -35,15 +35,20 @@ export default function ConfifgurationProvider({children}: Props) {
 		selectedOptions: {}
 	})
 
+	//TODO: review
 	function setCurrentProduct(product: Product) {
 		const initialOptions: Record<PartId, OptionId> = {};
 		
-		product.parts?.forEach(part => {
-			const inStockOption = part.options.find(option => option.stockStatus === "IN_STOCK");
-			if (part.options.length === 1 || inStockOption) {
-				initialOptions[part.id] = inStockOption?.id || part.options[0].id;
-			}
-		});
+		//FIXME:
+		//product.parts?.forEach(part => {
+		//	const inStockOption = part.options.find(option => option.stockStatus === "IN_STOCK");
+		//	if (part.options.length === 1 || inStockOption) {
+		//		initialOptions[part.id] = inStockOption?.id || part.options[0].id;
+		//	}
+		//});
+		//product.availableCharacteristics.forEach(characteristic => {
+		//	const inStockOptions = characteristic
+		//})
 		
 		setConfigState({
 			currentProductId: product.id,
@@ -51,15 +56,15 @@ export default function ConfifgurationProvider({children}: Props) {
 		});
 	};	
 
-	function selectOption(partId: PartId, optionId: OptionId) {
+	function selectOption(characteristicType: string, optionName: string) {
 		setConfigState(prevState => ({
 			...prevState,
 			selectedOptions: {
 				...prevState.selectedOptions,
-				[partId]: optionId
+				[characteristicType]: optionName
 			}
-		}));
-	};
+		}))
+	}
 
 	function resetConfiguration() {
 		setConfigState({
