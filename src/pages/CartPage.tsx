@@ -13,13 +13,13 @@ export default function CartPage() {
 			{ items.length > 0?
 				items.map(item => (
 					<CartItem 
+						key={item.productId}
 						productId={item.productId}
 						cartItemId={item.cartItemId}
-						//TODO: selectedOptions
+						selectedOptions={item.selectedOptions}
 						productName={item.name}
 						productPrice={item.basePrice}
 						productImageUrl={item.imageUrl}
-						// what do I do with this? productModel={}
 						currency="EUR" //What do I do with this?
 						productQty={item.qty}
 					/>

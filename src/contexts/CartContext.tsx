@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { OptionId, PartId, ProductId, SelectedProductConfig } from "../types/product";
+import { CharacteristicType, OptionId, PartId, ProductId, SelectedProductConfig } from "../types/product";
 import { CartItem } from "../types/cart";
 
 interface CartContextType {
@@ -53,22 +53,25 @@ export default function CartProvider({children}: Props) {
 		}
 	}, [items])
 
-	function getCartItem(productId: ProductId, selectedOptions: Record<PartId, OptionId>) {
+	function getCartItem(productId: ProductId, selectedOptions: Record<CharacteristicType, string>) {
 		return items.find(item => {
 			if (item.productId !== productId) return false;
 
-			const itemOptionsKeys = Object.keys(item.selectedOptions);
-			const newOptionsKeys = Object.keys(selectedOptions)
+			const itemCharacteristicsKeys = Object.keys(item.selectedOptions) as CharacteristicType[];
+			const newItemCharacteristicsKeys = Object.keys(selectedOptions) as CharacteristicType[];
 
-			if (itemOptionsKeys.length !== newOptionsKeys.length) return false;
+			if (itemCharacteristicsKeys.length !== newItemCharacteristicsKeys.length) return false;
 
-			return itemOptionsKeys.every(key => 
-				item.selectedOptions[key] === selectedOptions[key]
+
+			return itemCharacteristicsKeys.every(key => 
+				selectedOptions[key] !== undefined && item.selectedOptions[key] === selectedOptions[key]
 			)
+
 		})
 	}
 
 	function addToCart(productName: string, basePrice: number, imageUrl: string, config: SelectedProductConfig) {
+		//TODO: RULES!!!!!!!
 		const { productId, selectedOptions } = config
 
 		const existingItem = getCartItem(productId, selectedOptions)
