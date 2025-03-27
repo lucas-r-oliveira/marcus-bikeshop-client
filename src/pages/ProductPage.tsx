@@ -2,9 +2,9 @@ import '../styles/pages/ProductPage.css';
 
 import { useParams } from 'react-router';
 import { useProduct } from '../contexts/ProductContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { Product } from '../types/product';
+import { CharacteristicType, Product } from '../types/product';
 import CustomizationOption from '../components/CustomizationOption';
 import { useCart } from '../contexts/CartContext';
 import { useProductConfig } from '../contexts/ConfigurationContext';
@@ -15,6 +15,9 @@ interface Option {
 	inStock: boolean;
 	name: string;
 }
+type AvailableCharacteristics = {
+	[K in CharacteristicType]: Option[];
+};
 
 export default function ProductPage() {
 	const { productId } = useParams();
@@ -22,20 +25,30 @@ export default function ProductPage() {
 	const { addToCart } = useCart()
 	const { setCurrentProduct, currentProductId, selectedOptions, selectOption } = useProductConfig()
 	const [ product, setProduct ] = useState<Product | undefined>(undefined)
-	const [availableCharacteristics, setAvailableCharacteristics] = useState<{[name: string]: Option[]}>({})
+	const [availableCharacteristics, setAvailableCharacteristics] = useState<Partial<AvailableCharacteristics>>({})
+
+	const hasSetProduct = useRef<boolean>(false);
 
 	useEffect(() => {
 		if (!productId) return // if product doesn't exist everything else fails TODO: error handling
-		const product = getProductById(productId)
-		if (!product) return;
+		
+		const fetchedProduct = getProductById(productId)
+		if (!fetchedProduct) return;
 
-		setProduct(product);
-		setCurrentProduct(product);
-		// TODO: handle 404 here
+		if(product?.id !== fetchedProduct.id) {
+			setProduct(fetchedProduct)
+			hasSetProduct.current = false;
+		}
 
-		if (product.availableCharacteristics) {
+		if (!hasSetProduct.current) {
+			setCurrentProduct(fetchedProduct);
+			hasSetProduct.current= true;
+		}
+
+		//TODO: this can actually come from the context
+		if (fetchedProduct.availableCharacteristics) {
 			const characteristics:{[name: string]: Option[]} = {}
-			product.availableCharacteristics.map(characteristic => {
+			fetchedProduct.availableCharacteristics.map(characteristic => {
 				if(!(characteristic.characteristicType in characteristics)) {
 					characteristics[characteristic.characteristicType] = [{...characteristic}]
 				} else {
@@ -44,7 +57,7 @@ export default function ProductPage() {
 			})
 			setAvailableCharacteristics(characteristics)
 		}
-	}, [getProductById, productId, setCurrentProduct])
+	}, [getProductById, productId])
 
 	function handleAddToCart() {
 		if (!product || !productId) return;
@@ -76,7 +89,7 @@ export default function ProductPage() {
 						Object.entries(availableCharacteristics).map(([type, options]) => (
 							<CustomizationOption 
 								key={type}
-								characteristicType={type}
+								characteristicType={type as CharacteristicType}
 								options={options}
 								selectOption={selectOption}
 							/>

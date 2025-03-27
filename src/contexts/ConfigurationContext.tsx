@@ -1,16 +1,16 @@
 import { createContext, useContext, useState } from "react";
-import { OptionId, PartId, Product, ProductId } from "../types/product";
+import { OptionId, PartId, Product, ProductId, CharacteristicType, Option } from "../types/product";
 
 interface ConfigurationState {
 	currentProductId: ProductId | null;
-	selectedOptions: Record<PartId, OptionId>;
+	selectedOptions: Record<CharacteristicType, string>
 }
 
 interface ConfigurationContextType {
 	currentProductId: ProductId | null;
 	selectedOptions: Record<PartId, OptionId>;
 	setCurrentProduct: (product: Product) => void;
-	selectOption: (partId: PartId, optionId: OptionId) => void;
+	selectOption: (charType: CharacteristicType, optionName: string) => void;
 	resetConfiguration: () => void;
 	isConfigurationValid: () => boolean;
 }
@@ -32,31 +32,41 @@ export default function ConfifgurationProvider({children}: Props) {
 	//const { constraints } = useConstraints();
 	const [configState, setConfigState] = useState<ConfigurationState>({
 		currentProductId: null,
-		selectedOptions: {}
+		selectedOptions: {} as Record<CharacteristicType, string>
 	})
 
 	//TODO: review
 	function setCurrentProduct(product: Product) {
 		const initialOptions: Record<PartId, OptionId> = {};
-		
-		//FIXME:
-		//product.parts?.forEach(part => {
-		//	const inStockOption = part.options.find(option => option.stockStatus === "IN_STOCK");
-		//	if (part.options.length === 1 || inStockOption) {
-		//		initialOptions[part.id] = inStockOption?.id || part.options[0].id;
-		//	}
-		//});
-		//product.availableCharacteristics.forEach(characteristic => {
-		//	const inStockOptions = characteristic
-		//})
-		
+
+		// group characteristics by type
+		const characteristicMap = new Map<CharacteristicType, Option[]>();
+
+		product.availableCharacteristics.forEach(characteristic => {
+			if (!characteristicMap.has(characteristic.characteristicType)) {
+				characteristicMap.set(characteristic.characteristicType, []);
+			}
+			characteristicMap.get(characteristic.characteristicType)!.push({ name: characteristic.name, inStock: characteristic.inStock});
+		});
+
+		characteristicMap.forEach((options, type) => {
+			if (!(type in configState.selectedOptions)) {
+				const selOption = options.find(opt => opt.inStock);
+				if (!selOption) {
+					console.warn(`No in-stock option found for type: ${type}`);
+					return;
+				}
+				initialOptions[type] = selOption.name;
+			}
+		});
+
 		setConfigState({
 			currentProductId: product.id,
 			selectedOptions: initialOptions
 		});
 	};	
 
-	function selectOption(characteristicType: string, optionName: string) {
+	function selectOption(characteristicType: CharacteristicType, optionName: string) {
 		setConfigState(prevState => ({
 			...prevState,
 			selectedOptions: {
@@ -69,7 +79,7 @@ export default function ConfifgurationProvider({children}: Props) {
 	function resetConfiguration() {
 		setConfigState({
 			currentProductId: null,
-			selectedOptions: {}
+			selectedOptions: {} as Record<CharacteristicType, string>
 		});
 	};
 

@@ -1,30 +1,25 @@
 import '../styles/components/CustomizationOption.css';
-
-//FIXME: defined in the parent component
-interface Option {
-	name: string;
-	inStock: boolean;
-}
+import { CharacteristicType, Option} from '../types/product';
 
 interface Props {
-	characteristicType: string;
+	characteristicType: CharacteristicType;
 	options: Option[];
-	//TODO: review
-	selectOption: (characteristicType: string, optionName: string) => void;
+	selectOption: (characteristicType: CharacteristicType, optionName: string) => void;
 }
-export default function CustomizationOption(props: Props/*props: ProductPart*/) {
 
+export default function CustomizationOption(props: Props/*props: ProductPart*/) {
 	return (
 		<div className="customization-option-container">
 
 			<label>{props.characteristicType}:</label>
-			<select className='select-container'>
+			<select 
+				className='select-container' 
+				onChange={(e)=> props?.selectOption(props.characteristicType, e.target.value)}>
 				{props.options.map((option) => (
 					<option 
 						disabled={!option.inStock} 
 						key={option.name} 
 						value={option.name}
-						onSelect={()=> props?.selectOption(props.characteristicType, option.name)}
 					>
 						{option.name}
 					</option>

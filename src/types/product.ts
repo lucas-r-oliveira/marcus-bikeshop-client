@@ -2,7 +2,6 @@ export type ProductId = string;
 export type PartId = string;
 export type OptionId = string;
 
-type StockStatus = "IN_STOCK" | "OUT_OF_STOCK"
 
 //export interface PartOption {
 //	id: OptionId;
@@ -31,9 +30,14 @@ type StockStatus = "IN_STOCK" | "OUT_OF_STOCK"
 //}
 
 
+//export interface SelectedProductConfig {
+//	productId: ProductId;
+//	selectedOptions: Record<PartId, OptionId>;
+//}
+
 export interface SelectedProductConfig {
 	productId: ProductId;
-	selectedOptions: Record<PartId, OptionId>;
+	selectedOptions: Record<CharacteristicType, string>;
 }
 
 export interface PartConfiguration {
@@ -56,10 +60,14 @@ export interface PartConfiguration {
 	options: PartOption[];
   }
   
-  export interface CharacteristicOption {
+  export type CharacteristicType = "Frame Type" | "Frame Finish" | "Wheels" | "Rim Color" | "Chain" | "Size" | "Brake Type" | "Suspension";
+
+  export interface Option {
 	name: string;
-	characteristicType: string;
-	inStock: boolean;
+	inStock: boolean
+  }
+  export interface CharacteristicOption extends Option {
+	characteristicType: CharacteristicType;
   }
   
   export interface Product {
