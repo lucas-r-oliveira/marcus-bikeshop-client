@@ -13,6 +13,8 @@ interface ConfigurationContextType {
 	selectOption: (charType: CharacteristicType, optionName: string) => void;
 	resetConfiguration: () => void;
 	isConfigurationValid: () => boolean;
+	defaultCharacteristicsMap: Map<CharacteristicType, Option[]>;
+	availCharacteristicsMap: Map<CharacteristicType, Option[]>;
 }
 const ConfigurationContext = createContext<ConfigurationContextType | null>(null);
 
@@ -27,29 +29,47 @@ export function useProductConfig(): ConfigurationContextType  {
 
 type Props = {
 	children?: React.ReactNode
-}
+}	
+type CharacteristicsMapType = Map<CharacteristicType, Option[]>
+
 export default function ConfifgurationProvider({children}: Props) {
 	//const { constraints } = useConstraints();
 	const [configState, setConfigState] = useState<ConfigurationState>({
 		currentProductId: null,
 		selectedOptions: {} as Record<CharacteristicType, string>
 	})
+	const [availCharacteristicsMap, setAvailCharacteristicsMap] = useState<CharacteristicsMapType>(new Map())
+	const [defaultCharacteristicsMap, setDefaultCharacteristicsMap] = useState<CharacteristicsMapType>(new Map())
 
 	//TODO: review
 	function setCurrentProduct(product: Product) {
-		const initialOptions: Record<PartId, OptionId> = {};
+		const initialOptions: Record<CharacteristicType, string> = {} as Record<CharacteristicType, string>;
 
 		// group characteristics by type
-		const characteristicMap = new Map<CharacteristicType, Option[]>();
+		const aCharacteristicsMap = new Map<CharacteristicType, Option[]>();
+		const dCharacteristicsMap = new Map<CharacteristicType, Option[]>();
 
-		product.availableCharacteristics.forEach(characteristic => {
-			if (!characteristicMap.has(characteristic.characteristicType)) {
-				characteristicMap.set(characteristic.characteristicType, []);
-			}
-			characteristicMap.get(characteristic.characteristicType)!.push({ name: characteristic.name, inStock: characteristic.inStock});
-		});
+		if (product.defaultCharacteristics) {
+			product.defaultCharacteristics.forEach(characteristic => {
+				if (!dCharacteristicsMap.has(characteristic.characteristicType)) {
+					dCharacteristicsMap.set(characteristic.characteristicType, []);
+				}
+				dCharacteristicsMap.get(characteristic.characteristicType)!.push({ name: characteristic.name, inStock: characteristic.inStock });
+			});
+		}
+		if (product.availableCharacteristics) {
+			product.availableCharacteristics.forEach(characteristic => {
+				if (!aCharacteristicsMap.has(characteristic.characteristicType)) {
+					aCharacteristicsMap.set(characteristic.characteristicType, []);
+				}
+				aCharacteristicsMap.get(characteristic.characteristicType)!.push({ name: characteristic.name, inStock: characteristic.inStock });
+			});
+		}
 
-		characteristicMap.forEach((options, type) => {
+		setAvailCharacteristicsMap(aCharacteristicsMap)
+		setDefaultCharacteristicsMap(dCharacteristicsMap)
+
+		aCharacteristicsMap.forEach((options, type) => {
 			if (!(type in configState.selectedOptions)) {
 				const selOption = options.find(opt => opt.inStock);
 				if (!selOption) {
@@ -96,6 +116,8 @@ export default function ConfifgurationProvider({children}: Props) {
 		selectOption,
 		resetConfiguration,
 		isConfigurationValid,
+		defaultCharacteristicsMap,
+		availCharacteristicsMap,
 	}
 
 	return (

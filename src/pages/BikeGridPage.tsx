@@ -18,10 +18,6 @@ export default function BikeGridPage() {
 					price={product.basePrice}
 					currency={product.currency}
 					imageUrl={product.imageUrl}
-					inStock={product.inStock} 
-					//TODO: category={product.category}
-					//TODO: parts={product.parts}
-					//actions={[{text: "add to cart", action: ()=>console.log("hello"), }]}
 				/>
 			))}
 		 </ProductGrid>

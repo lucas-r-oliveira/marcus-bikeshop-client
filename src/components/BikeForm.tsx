@@ -1,35 +1,93 @@
 import { useEffect, useState } from "react";
 import "../styles/components/BikeForm.css";
-import { Product } from "../types/product";
+import { CharacteristicType, Product } from "../types/product";
 import { useLocation } from "react-router";
+import { useProductConfig } from "../contexts/ConfigurationContext";
+import { useProduct } from "../contexts/ProductContext";
 
 
 export default function BikeForm() {
-	// In the create part we need to display all possible parts
-	// In the edit part we might display only the options that product allows
+
 	const { state } = useLocation();
+	const { 
+		defaultCharacteristicsMap, 
+		availCharacteristicsMap, 
+		setCurrentProduct 
+	} = useProductConfig() 
+	const { getProductById } = useProduct()
 	const [isEdit, setIsEdit] = useState(false);
-	const [selectedProduct, setSelectedProduct] = useState<Product>({...state}) // FIXME:
+	const [selectedProduct, setSelectedProduct] = useState<Product>({} as Product) // FIXME: will I use this? unsure
+	const [characteristicConfig, setCharacteristicConfig] = useState<Map<CharacteristicType, string[]>>(new Map());
 
 	useEffect(() => {
-		//if(selectedProduct.id && selectedProduct.id !== "") {
-		if(state?.id && state?.id !== ""){
-			setIsEdit(true);
+		const productId = state?.id
+		if(productId && productId !== "") {
+			setIsEdit(true)
+			const product = getProductById(productId)
+
+			if(product) {
+				setSelectedProduct(product)
+				setCurrentProduct(product)
+			}
 		}
-	}, [isEdit, state])
+	}, [state?.id, getProductById])
+
+	useEffect(() => {
+		if(!selectedProduct) return
+		const initialConfig = new Map<CharacteristicType, string[]>();
+
+		selectedProduct.availableCharacteristics?.forEach(char => {
+			if (!initialConfig.has(char.characteristicType)) {
+				initialConfig.set(char.characteristicType, []);
+			}
+		
+			initialConfig.get(char.characteristicType)!.push(char.name);
+		});
+
+		setCharacteristicConfig(initialConfig)
+
 	
-	//TODO: do I need a context to propagate this upwards?
-	// or useReduce?
+	}, [selectedProduct])
+
+
 	function handleInputChange(
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) {
 		const { name, value } = e.target;
-
 		setSelectedProduct({
 		...selectedProduct,
 		[name]: name === "basePrice" ? parseFloat(value) : value,
 		});
 	}
+
+	
+
+	function handleCharacteristicChange(
+		characteristicType: CharacteristicType,
+		optionName: string
+	  ) {
+		setCharacteristicConfig((prevConfig) => {
+		  const newConfig = new Map(prevConfig); 
+		  const currentOptions = newConfig.get(characteristicType) || [];
+	  
+		  let updatedOptions;
+		  if (currentOptions.includes(optionName)) {
+			updatedOptions = currentOptions.filter((option) => option !== optionName);
+		  } else {
+			updatedOptions = [...currentOptions, optionName];
+		  }
+	  
+		  if (updatedOptions.length > 0) {
+			newConfig.set(characteristicType, updatedOptions);
+		  } else {
+			newConfig.delete(characteristicType);
+		  }
+	  
+		  return new Map(newConfig); 
+		});
+	  }
+
+	
 
 	return(
 		<div className="management-container">
@@ -64,14 +122,6 @@ export default function BikeForm() {
 							className="price-input"
 							onChange={handleInputChange}
 							/>
-							{/* <input
-							type="text"
-							name="currency"
-							placeholder="Currency"
-							value={newBike.currency}
-							className="currency-input"
-								onChange={handleInputChange}
-							/> */}
 							<p>{selectedProduct.currency}</p>
 						</div>
 
@@ -92,35 +142,37 @@ export default function BikeForm() {
 							className="form-input"
 							onChange={handleInputChange}
 						/>
-
-						<label className="stock-label">
-							<input type="checkbox" name="inStock" checked={selectedProduct.inStock} />
-							In Stock
-						</label>
-
 					</div>
 				</div>
-				<div className="parts-form-container">
-					<h2 className="section-title">Part Configuration</h2>
-					{/* {TODO: if product doesnt have customizable parts display a msg} */}
-					<div className="product-parts-container">
-						{selectedProduct?.parts?.map((part) => (
-							<div key={part.name} className="product-part">
-								<label className="product-part-label">{part.name}:</label>
-								<div className="product-part-options">
-									{part.options.map((opt) => (
-									<label key={opt.id} className="product-option-label">
-										<input type="checkbox" value={opt.id} />
-										{opt.name}
+				<div className="characteristics-form-container">
+					<h2 className="section-title">Product Characteristics Configuration</h2>
+					{
+						defaultCharacteristicsMap.size === 0?
+						<p>No characteristics available for this product</p>
+						:
+						Array.from(defaultCharacteristicsMap.entries()).map(([characteristicType, options]) => (
+							<div key={characteristicType} className="characteristic-container">
+								<label className="characteristic-label">{characteristicType}:</label>
+								<div className="characteristic-options">
+									{options.map(opt => (
+									<label key={opt.name} className="characteristic-option-label">
+										<input 
+											type="checkbox" 
+											value={opt.name} 
+											disabled={!opt.inStock}
+											
+											checked={
+												characteristicConfig.get(characteristicType)?.includes(opt.name)	
+											}
+											onChange={() => handleCharacteristicChange(characteristicType, opt.name)}
+										/>
+										{opt.name} {!opt.inStock && '(Out of Stock)'}
 									</label>
 									))}
 								</div>
 							</div>
-						))}
-					</div>
-					{/* <div className="part-badges-container">
-						{selectedProduct?.parts?.map((part) =>(<span className="part-badge">{part.name}</span>))}
-					</div> */}
+						))
+					}
 				</div>
 			</div>
 			<button className="action-btn">{isEdit? "Edit Bicycle" : "Create Bicycle"}</button>

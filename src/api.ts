@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ProductId } from './types/product';
 
 
 export interface PartOptionSelection {[key: string]: string}
@@ -122,6 +123,17 @@ export class ProductStoreApi {
     const response = await axios.post<ProductResponse>(`${this.baseUrl}/products/bicycles`, product);
     return response.data;
   }
+
+async deleteBicycle(productId: ProductId): Promise<number> {
+	try {
+	  const response = await axios.delete(`${this.baseUrl}/products/bicycles/${productId}`);
+	  console.log(response);
+	  return response.status;
+	} catch (error) {
+	  console.error("Delete API call failed", error);
+	  throw error;
+	}
+ }
 
   async fetchCart(cartId: string): Promise<CartResponse> {
     const response = await axios.get<CartResponse>(`${this.baseUrl}/cart/${cartId}`);

@@ -5,44 +5,37 @@ import { useProduct } from "../contexts/ProductContext";
 import ProductCard from "../components/ProductCard";
 import { Product, ProductId } from "../types/product";
 import { useNavigate } from "react-router";
+import { useProductConfig } from "../contexts/ConfigurationContext";
 
 //FIXME: hardcoded currency
 export default function BikeManagementPage() {
   const navigate = useNavigate();
-  const { products } = useProduct();
+  const { products, deleteBicycle } = useProduct();
+  const { setCurrentProduct } = useProductConfig()
   const [bikes, setBikes ] = useState(products)
-  /*const [newBike, setNewBike] = useState<Product>({
-    id: "",
-    name: "",
-    description: "",
-    basePrice: 0,
-    currency: "€",
-    imageUrl: "",
-    inStock: true,
-    category: "",
-  });*/
 
-	/*function handleInputChange(
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) {
-		const { name, value } = e.target;
-
-		setNewBike({
-		...newBike,
-		[name]: name === "basePrice" ? parseFloat(value) : value,
-		});
-	}*/
-
-
-	// this goes to a context probably
-	//FIXME:
-	function handleDeleteBike(productId: ProductId) {
-		setBikes(bikes.filter(bike => bike.id !== productId));
+	
+	async function handleDeleteBike(productId: ProductId) {
+		try {
+			const response = await deleteBicycle(productId);
+			console.log(response);
+			if (response >= 200 && response < 300) {
+				setBikes(bikes.filter(bike => bike.id !== productId)); 
+			} else {
+				alert("Failed to delete bike. Please try again.");
+			}
+		} catch (error) {
+			console.error("Delete failed", error);
+			alert("Failed to delete bike. Please try again.");
+		}
 	}
+
 
 	function handleEditBike(product: Product) {
+		setCurrentProduct(product)
 		navigate(`/admin/products/${product.id}` , {state: product}) //TODO: /bicycles or not?
 	}
+
 	function handleCreateBike() {
 		navigate(`/admin/products/create` , {state: {
 			id: "",
@@ -68,7 +61,6 @@ export default function BikeManagementPage() {
 				name={product.name}
 				description={product.description}
 				imageUrl={product.imageUrl}
-				inStock={product.inStock}
 				price={product.basePrice}
 				currency={product.currency}
 				actions={[

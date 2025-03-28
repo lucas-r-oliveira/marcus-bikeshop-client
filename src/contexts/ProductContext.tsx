@@ -5,6 +5,7 @@ import { createProductStoreApi, ProductResponse } from "../api";
 interface ProductContextType {
 	products: Product[];
 	getProductById: (productId: string) => Product | undefined;
+	deleteBicycle: (productId: ProductId) => number;
 }
 const ProductContext = createContext<ProductContextType | null>(null);
 
@@ -21,8 +22,6 @@ type Props = {
 	children?: React.ReactNode
 }
 export default function ProductProvider({children}: Props) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	//const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 	//const [products, setProducts] = useState<Product[]>(sampleBikes);
 	//FIXME: type ProductResponse? type Product is not compatible...
@@ -38,7 +37,6 @@ export default function ProductProvider({children}: Props) {
 		setError(null);
 		try {
 		  const fetchedProducts = await api.fetchBicycles();
-		  console.log(fetchedProducts)
 		  setProducts(fetchedProducts);
 		} catch (err) {
 		  const errorMessage = err instanceof Error 
@@ -51,21 +49,34 @@ export default function ProductProvider({children}: Props) {
 		//}
 	  }, [api]);
 
+
 	useEffect(() => {
 		fetchBicycles();
 	}, [fetchBicycles]);
 	 
+	const deleteBicycle = useCallback(async (productId: ProductId) => {
+		try {
+			return await api.deleteBicycle(productId);
+		} catch (error) {
+			console.error("Failed to delete bicycle", error);
+			throw error; // Optional: propagate the error if the caller needs to handle it
+		}
+	}, [api]);
 
+	// function getProductById(productId: ProductId): Product | undefined {
+		// return products.find(product => product.id === productId)
+	// }
 
-	function getProductById(productId: ProductId): Product | undefined {
-		return products.find(product => product.id === productId)
-	}
+	const getProductById = useCallback((productId: ProductId): Product | undefined => {
+		return products.find(product => product.id === productId);
+	  }, [products]); 
 
 
 
 	const value: ProductContextType = {
 		products,
-		getProductById
+		getProductById,
+		deleteBicycle
 	}
 
 	return (
